@@ -15,6 +15,7 @@ public class ServerTP extends Thread{
     private ArrayList<String> onlinePseudos = new ArrayList<>();
     private ArrayList<String> coInfos = new ArrayList<>();
     private ArrayList<String> ops = new ArrayList<>();
+    private ArrayList<String> nonOps = new ArrayList<>();
     private ArrayList<String> bannedPseudos = new ArrayList<>();
     private static FileWriter fileWriter;
     ServerSocket serverSocket;
@@ -82,16 +83,6 @@ public class ServerTP extends Thread{
             return;
         }
         reload();
-        System.out.println("Accepted users are :");
-        for(String pseudo : pseudos){
-            if(!bannedPseudos.contains(pseudo)){
-                System.out.println("- "+pseudo);
-            }
-        }
-        System.out.println("Banned are :");
-        for(String bannedPseudo : bannedPseudos){
-            System.out.println("- "+bannedPseudo);
-        }
         //coInfos.put("Admin","Mric.21000Dijon@college.com");
     }
 
@@ -341,18 +332,7 @@ public class ServerTP extends Thread{
                 onlinePseudos.remove(this.username);
                 clientsOnline.remove(this);
             } catch (IOException e) {
-                try {
-                    System.out.println("[ERROR] Closing server due to an SocketException...\n");
-                    fileWriter.write("[ERROR] Closing server due to an SocketException...\n");
-                    fileWriter.flush();
-
-                }
-                catch (IOException e1){
-
-                }
-                fileWriter.close();
-                serverSocket.close();
-                System.exit(69);
+                e.printStackTrace();
             }
         }
     }
@@ -372,19 +352,49 @@ public class ServerTP extends Thread{
 
             ops.add(infosDeCo.split(":")[0]);
         }
+
+        for(ClientHandler clientHandler : clients){
+            if(ops.contains(clientHandler.username)){
+                clientHandler.isAdmin=true;
+                if(!opedClients.contains(clientHandler)) opedClients.add(clientHandler);
+            }
+        }
+        nonOps.clear();
         BufferedReader bufferedReader2 = new BufferedReader(new FileReader(nonOpFile));
         while((infosDeCo=bufferedReader2.readLine())!=null){
             if(!coInfos.contains(infosDeCo)) {
                 coInfos.add(infosDeCo);
             }
+            if(!ops.contains(infosDeCo.split(":")[0])) nonOps.add(infosDeCo.split(":")[0]);
         }
         System.out.println("Config reloaded !");
 
         bufferedReader.close();
 
+        BufferedReader bannedFileReader = new BufferedReader(new FileReader(bannedFile));
+        bannedPseudos.clear();
+        String bannedReader;
+        while((bannedReader = bannedFileReader.readLine())!=null){
+            String tempPseudo = bannedReader.split(":")[0];
+            bannedPseudos.add(tempPseudo);
+            if(ops.contains(tempPseudo)) ops.remove(tempPseudo);
+            if(nonOps.contains(tempPseudo)) nonOps.remove(tempPseudo);
+        }
+        bannedFileReader.close();
+
         System.out.println("Ops are :");
         for (String op : ops){
             System.out.println("- "+op);
+        }
+
+        System.out.println("Banned are :");
+        for(String banned : bannedPseudos){
+            System.out.println("- "+bannedPseudos);
+        }
+
+        System.out.println("Other allowed peoples :");
+        for(String nonOp : coInfos){
+            if(!ops.contains(nonOp)) System.out.println("- "+nonOp.split(":")[0]);
         }
     }
 }
