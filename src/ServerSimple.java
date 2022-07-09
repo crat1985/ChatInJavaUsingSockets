@@ -5,15 +5,12 @@ import java.util.ArrayList;
 
 public class ServerSimple implements Runnable{
     private ArrayList<ConnectionHandler> connections;
-
     public ServerSimple(){
         connections = new ArrayList<>();
     }
-
     public static void main(String[] args) {
         new Server().run();
     }
-
     @Override
     public void run() {
         try {
@@ -28,26 +25,19 @@ public class ServerSimple implements Runnable{
             e.printStackTrace();
         }
     }
-
     public void broadcast(String msg){
         for(ConnectionHandler client : connections) if(client!=null) client.sendMsg(msg);
         System.out.println(msg);
 
     }
-
-
-
     class ConnectionHandler implements Runnable{
-
         private Socket socket;
         private BufferedReader in;
         private PrintWriter out;
         private String username;
-
         public ConnectionHandler(Socket socket){
             this.socket = socket;
         }
-
         @Override
         public void run() {
             try {
@@ -83,13 +73,9 @@ public class ServerSimple implements Runnable{
                     if(socket!=null){
                         socket.close();
                     }
-                } catch (IOException ex) {
-
-                }
+                } catch (IOException ex) {}
             }
         }
-        public void sendMsg(String msg){
-            out.println(msg);
-        }
+        public void sendMsg(String msg){out.println(msg);}
     }
 }

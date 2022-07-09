@@ -7,20 +7,20 @@ import java.util.HashMap;
 
 public class ServerTP extends Thread{
 
-    private ArrayList<ClientHandler> clientsOnline;
-    private ArrayList<ClientHandler> clients;
-    private ArrayList<ClientHandler> opedClients;
-    private ArrayList<ClientHandler> bannedClients;
-    private ArrayList<String> pseudos;
-    private ArrayList<String> onlinePseudos;
-    private ArrayList<String> coInfos;
-    private ArrayList<String> ops;
-    private ArrayList<String> bannedPseudos;
+    private ArrayList<ClientHandler> clientsOnline = new ArrayList<>();
+    private ArrayList<ClientHandler> clients = new ArrayList<>();
+    private ArrayList<ClientHandler> opedClients = new ArrayList<>();
+    private ArrayList<ClientHandler> bannedClients = new ArrayList<>();
+    private ArrayList<String> pseudos = new ArrayList<>();
+    private ArrayList<String> onlinePseudos = new ArrayList<>();
+    private ArrayList<String> coInfos = new ArrayList<>();
+    private ArrayList<String> ops = new ArrayList<>();
+    private ArrayList<String> bannedPseudos = new ArrayList<>();
     private static FileWriter fileWriter;
     ServerSocket serverSocket;
-    File opsFile;
-    File nonOpFile;
-    File bannedFile;
+    File opsFile = new File("ops.txt");
+    File nonOpFile = new File("non-ops.txt");
+    File bannedFile = new File("banned.txt");
     @Override
     public void run() {
         try{
@@ -30,12 +30,11 @@ public class ServerTP extends Thread{
             while(!serverSocket.isClosed()) {
                 Socket client = serverSocket.accept();
                 ClientHandler handler = new ClientHandler(client);
-                //clientsOnline.add(handler);
                 new Thread(handler).start();
             }
         } catch (IOException e){
+
             try {
-                //broadcastMsg("Closing server due to an SocketException...");
                 fileWriter.write("[ERROR] Closing server due to an SocketException...\n");
                 fileWriter.flush();
                 fileWriter.close();
@@ -54,20 +53,10 @@ public class ServerTP extends Thread{
     }
 
     public ServerTP() throws IOException {
-        clientsOnline = new ArrayList<>();
-        clients = new ArrayList<>();
-        pseudos = new ArrayList<>();
-        opedClients = new ArrayList<>();
-        bannedClients = new ArrayList<>();
-        onlinePseudos = new ArrayList<>();
-        coInfos = new ArrayList<>();
-        ops = new ArrayList<>();
-        opsFile = new File("ops.txt");
-        bannedPseudos = new ArrayList<>();
         if(!opsFile.exists()){
             opsFile.createNewFile();
             PrintWriter printWriter = new PrintWriter(opsFile);
-            printWriter.println("Admin:Mric.21000Dijon@college.com");
+            printWriter.println("Admin:Mric.21000");
             printWriter.flush();
             printWriter.close();
         }
@@ -82,15 +71,15 @@ public class ServerTP extends Thread{
         if(nonOpFile.isDirectory()) {
             System.out.println("[ERROR] Non-op file is a directory");
             fileWriter.write("[ERROR] No-op file is a directory\n");
+            return;
         }
-
-        bannedFile = new File("banned.txt");
         if(!bannedFile.exists()){
             bannedFile.createNewFile();
         }
         if(bannedFile.isDirectory()) {
             System.out.println("[ERROR] Banned file is a directory");
             fileWriter.write("[ERROR] Banned file is a directory\n");
+            return;
         }
         reload();
         System.out.println("Accepted users are :");
@@ -140,7 +129,7 @@ public class ServerTP extends Thread{
 
         private boolean isCorrect(String infos) {
             if(coInfos.contains(infos)){
-                if(!onlinePseudos.contains(infos.split(":")[0].toLowerCase())){
+                if(!onlinePseudos.contains(infos.split(":")[0])){
                     return true;
                 }
                 out.println("Someone with your username is already connected !");
@@ -155,21 +144,28 @@ public class ServerTP extends Thread{
             try {
                 out = new PrintWriter(client.getOutputStream(),true);
                 in = new BufferedReader(new InputStreamReader(client.getInputStream()));
-                out.println("Enter \"username:password\" to connect :");
-                infosDeCo = in.readLine();
+                out.println("Username :");
+                String askedPseudo = in.readLine();
+                out.println("Password :");
+                String askedPassword = in.readLine();
+                if(askedPseudo.contains(":")||askedPassword.contains(":")){
+                    closeEverything();
+                    return;
+                }
+                infosDeCo = askedPseudo+":"+askedPassword;
                 if(!isCorrect(infosDeCo)){
                     closeEverything();
                     return;
                 }
-                username = infosDeCo.split(":")[0];
-                password = infosDeCo.split(":")[1];
+                username = askedPseudo;
+                password = askedPassword;
                 if(ops.contains(username)){
                     isAdmin=true;
                     if(!opedClients.contains(this)) opedClients.add(this);
                 }
                 clientsOnline.add(this);
-                clients.add(this);
-                pseudos.add(this.username);
+                if(!clients.contains(this)) clients.add(this);
+                if(!pseudos.contains(this)) pseudos.add(this.username);
                 onlinePseudos.add(this.username);
                 broadcastMsg(username+" joined the chat !");
                 String msg;
@@ -299,7 +295,31 @@ public class ServerTP extends Thread{
 
                 if(msg.startsWith("/removeuser ")){
                     String user = msg.split(" ")[1];
-                    
+                    if(user.contains(":")){
+                        out.println("Le pseudo ne peut pas contenir de ':' !");
+                        return true;
+                    }
+                    BufferedReader br = new BufferedReader(new FileReader(nonOpFile));
+                    String content;
+                    ArrayList<String> fileContent = new ArrayList<>();
+                    while((content = br.readLine())!=null){
+                        fileContent.add(content);
+                    }
+                    br.close();
+                    for(String anUser : fileContent){
+                        if(anUser.split(":")[0].equals(user)){
+                            fileContent.remove(anUser);
+                            PrintWriter pw = new PrintWriter(new FileWriter(nonOpFile));
+                            for(String a : fileContent){
+                                pw.println(a);
+                            }
+                            pw.flush();
+                            pw.close();
+                            out.println("User "+user+" deleted !");
+                            return true;
+                        }
+                    }
+                    return true;
                 }
             }
             if(msg.startsWith("/list")){
@@ -358,7 +378,7 @@ public class ServerTP extends Thread{
                 coInfos.add(infosDeCo);
             }
         }
-        System.out.println("Ops config reloaded !");
+        System.out.println("Config reloaded !");
 
         bufferedReader.close();
 
