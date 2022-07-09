@@ -1,0 +1,11 @@
+[LOG] Server started
+[LOG] Admin joined the chat !
+[LOG] ric21000 joined the chat !
+[LOG] Cannot op RIC21000 !
+[LOG] Cannot op RIC21000 !
+[LOG] ric21000 is now op !
+[LOG] Cannot op ric21000 !
+[LOG] Cannot op ric21000 !
+[LOG] ric21000 is now op !
+[LOG] ric21000 leaves the chat !
+[LOG] Server stopped

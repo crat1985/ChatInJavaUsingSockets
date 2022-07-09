@@ -1,0 +1,17 @@
+[LOG] Server started
+[LOG] ric21000 joined the chat !
+[LOG] ric21000: /reload
+[LOG] ric21000: /stop
+[LOG] ric21000: gezbg
+[LOG] ric21000: *zeiugf
+[LOG] ric21000: qaefzuzioi
+[LOG] ric21000: qzaeug"io
+[LOG] ric21000: zeao"h
+[LOG] ric21000: qeiofhahf
+[LOG] ric21000: qseuofzg
+[LOG] ric21000: qefazio
+[LOG] ric21000: qsezgioh
+[LOG] ric21000: qszehogu
+[LOG] Admin joined the chat !
+[LOG] Admin leaves the chat !
+[LOG] Server stopped

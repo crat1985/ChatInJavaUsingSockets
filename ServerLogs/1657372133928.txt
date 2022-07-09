@@ -1,0 +1,7 @@
+[LOG] Server started
+[LOG] ric21000 joined the chat !
+[LOG] ric21000: /ops
+[LOG] ric21000: /stop
+[LOG] ric21000: /stop
+[LOG] ric21000: /stop
+[LOG] ric21000 leaves the chat !

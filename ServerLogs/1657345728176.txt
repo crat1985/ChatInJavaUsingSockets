@@ -1,0 +1,8 @@
+[LOG] Server started
+[LOG] Admin joined the chat !
+[LOG] Admin: /reload
+[LOG] Admin: /reload-ops
+[LOG] Admin: /reload-ops 
+[LOG] Admin: /stop
+[LOG] Admin: /stop
+[LOG] Admin leaves the chat !

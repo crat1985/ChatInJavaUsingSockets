@@ -1,0 +1,16 @@
+[LOG] Server started
+[LOG] null leaves the chat !
+[LOG] null leaves the chat !
+[LOG] Admin joined the chat !
+[LOG] Admin leaves the chat !
+[LOG] ric21000 joined the chat !
+[LOG] Cannot op Admin !
+[LOG] Cannot op Admin !
+[LOG] Admin not connected !
+[LOG] Cannot op Admin !
+[LOG] ric21000: /reload
+[LOG] null leaves the chat !
+[LOG] Admin joined the chat !
+[LOG] Admin leaves the chat !
+[LOG] ric21000: /stop
+[LOG] ric21000 leaves the chat !

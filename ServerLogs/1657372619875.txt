@@ -1,0 +1,5 @@
+[LOG] Server started
+[LOG] Admin joined the chat !
+[LOG] Admin: /stop
+[LOG] Admin: /stop
+[LOG] Admin leaves the chat !

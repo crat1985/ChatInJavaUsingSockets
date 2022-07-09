@@ -1,0 +1,7 @@
+[LOG] Server started
+[LOG] Admin joined the chat !
+[LOG] ric21000 joined the chat !
+[LOG] Admin is now op !
+[LOG] Admin is now op !
+[LOG] Admin leaves the chat !
+[LOG] Server stopped

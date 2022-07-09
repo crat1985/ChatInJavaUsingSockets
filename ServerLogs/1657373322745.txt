@@ -1,0 +1,6 @@
+[LOG] Server started
+[LOG] null leaves the chat !
+[LOG] null leaves the chat !
+[LOG] ric21000 joined the chat !
+[LOG] ric21000 leaves the chat !
+[LOG] Server stopped

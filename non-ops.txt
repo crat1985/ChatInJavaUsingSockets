@@ -1,0 +1,4 @@
+ric21000:00000000!aA
+Admin:Mric.21000Dijon@college.com
+slt:slt
+jsp:jsp
