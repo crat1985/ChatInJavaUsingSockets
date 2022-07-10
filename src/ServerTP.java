@@ -1,6 +1,7 @@
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.Buffer;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -119,6 +120,10 @@ public class ServerTP extends Thread{
         }
 
         private boolean isCorrect(String infos) {
+            if(bannedPseudos.contains(infos.split(":")[0])){
+                out.println("You're banned from this chat !");
+                return false;
+            }
             if(coInfos.contains(infos)){
                 if(!onlinePseudos.contains(infos.split(":")[0])){
                     return true;
@@ -182,7 +187,9 @@ public class ServerTP extends Thread{
         private boolean isCommand(String msg) throws IOException {
             if(isAdmin) {
                 if(msg.startsWith("/stop")){
-                    closeEverything();
+                    for(ClientHandler clientHandler : clientsOnline){
+                        clientHandler.closeEverything();
+                    }
                     fileWriter.write("[LOG] Server stopped\n");
                     fileWriter.flush();
                     fileWriter.close();
@@ -191,7 +198,6 @@ public class ServerTP extends Thread{
                 }
                 if(msg.startsWith("/reload")){
                     reload();
-                    out.println("Config reloaded !");
                     return true;
                 }
                 if(msg.startsWith("/op ")){
@@ -215,6 +221,7 @@ public class ServerTP extends Thread{
                         //System.out.println("[LOG] Cannot op "+msg.split(" ")[1]+" !");
                         broadcastMsg("Cannot op "+msg.split(" ")[1]+" !");
                         fileWriter.write("[LOG] Cannot op "+msg.split(" ")[1]+" !\n");
+                        return true;
                     }
                     //System.out.println("[LOG] "+msg.split(" ")[1]+" not connected !");
                     broadcastMsg(msg.split(" ")[1]+" not connected !");
@@ -240,20 +247,37 @@ public class ServerTP extends Thread{
                 }
 
                 if(msg.startsWith("/unban ")){
-                    if(!bannedPseudos.contains(msg.split(" ")[1])){
-                        broadcastMsg(bannedPseudos+" n'est pas banni(e) !");
-                        return true;
+                    String pseudo = msg.split(":")[1];
+                    if(bannedPseudos.contains(pseudo)){
+                        /*broadcastMsg(bannedPseudos+" n'est pas banni(e) !");
+                        return true;*/
+                        bannedPseudos.remove(pseudo);
                     }
-                    bannedPseudos.remove(msg.split(" ")[1]);
-                    for(ClientHandler client : clients){
-                        if(client.username.equalsIgnoreCase(msg.split(" ")[1])){
-                            bannedClients.remove(client);
-                            /*client.in.close();
-                            client.out.close();
-                            client.client.close();*/
-                            return true;
+                    BufferedReader bannedFileReader = new BufferedReader(new FileReader(bannedFile));
+                    ArrayList<String> bannedFileContent = new ArrayList<>();
+                    String line;
+                    while((line=bannedFileReader.readLine())!=null){
+                        bannedFileContent.add(line);
+                    }
+                    String oldBannedInfos = "";
+                    for(String details : bannedFileContent){
+                        if(details.startsWith(pseudo+":")){
+                            oldBannedInfos = details;
+                            break;
                         }
                     }
+                    if(!oldBannedInfos.equals("")){
+                        bannedFileContent.remove(oldBannedInfos);
+                        PrintWriter bannedFileWriter = new PrintWriter(new FileWriter(bannedFile));
+                        for(String bannedUser : bannedFileContent){
+                            bannedFileWriter.println(bannedUser);
+                        }
+                        bannedFileWriter.close();
+                        broadcastMsgToOps(oldBannedInfos.split(":")[0]+" unbanned !");
+                        return true;
+                    }
+                    broadcastMsgToOps(pseudo+" n'est pas banni(e) !");
+                    return true;
                 }
 
                 if(msg.startsWith("/add ")){
@@ -328,13 +352,26 @@ public class ServerTP extends Thread{
                 out.close();
                 in.close();
                 client.close();
-                broadcastMsg(username+" leaves the chat !");
+                if(username!=null){
+                    broadcastMsg(username+" leaves the chat !");
+                }
                 onlinePseudos.remove(this.username);
                 clientsOnline.remove(this);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
+    }
+
+    private void broadcastMsgToOps(String msg) throws IOException {
+        for(ClientHandler client : clientsOnline){
+            if(ops.contains(client.username)){
+                client.isAdmin = true;
+                client.sendMsg(msg);
+            }
+        }
+        System.out.println(msg);
+        fileWriter.write("[ADMIN BROADCAST] "+msg+"\n");
     }
 
     private void reload() throws IOException {
@@ -360,16 +397,31 @@ public class ServerTP extends Thread{
             }
         }
         nonOps.clear();
+        ArrayList<String> nonOpFileContent = new ArrayList<>();
         BufferedReader bufferedReader2 = new BufferedReader(new FileReader(nonOpFile));
         while((infosDeCo=bufferedReader2.readLine())!=null){
             if(!coInfos.contains(infosDeCo)) {
                 coInfos.add(infosDeCo);
             }
-            if(!ops.contains(infosDeCo.split(":")[0])) nonOps.add(infosDeCo.split(":")[0]);
+            nonOpFileContent.add(infosDeCo);
+            if(!nonOps.contains(infosDeCo.split(":")[0])) nonOps.add(infosDeCo.split(":")[0]);
         }
-        System.out.println("Config reloaded !");
-
         bufferedReader.close();
+        ArrayList<String> tempNonOp = new ArrayList<>();
+        for(String nonOp : nonOps){
+            if(ops.contains(nonOp)){
+                tempNonOp.add(nonOp);
+            }
+        }
+
+        nonOps.removeAll(tempNonOp);
+
+        PrintWriter printWriter = new PrintWriter(new FileWriter(nonOpFile));
+        for(String nonOp : nonOps){
+            printWriter.println(nonOp);
+        }
+        printWriter.flush();
+        printWriter.close();
 
         BufferedReader bannedFileReader = new BufferedReader(new FileReader(bannedFile));
         bannedPseudos.clear();
@@ -382,19 +434,22 @@ public class ServerTP extends Thread{
         }
         bannedFileReader.close();
 
-        System.out.println("Ops are :");
+        broadcastMsgToOps("Config reloaded !");
+
+        broadcastMsgToOps("Ops are :");
         for (String op : ops){
-            System.out.println("- "+op);
+            broadcastMsgToOps("- "+op);
         }
 
-        System.out.println("Banned are :");
+        broadcastMsgToOps("Banned are :");
         for(String banned : bannedPseudos){
-            System.out.println("- "+bannedPseudos);
+            broadcastMsgToOps("- "+banned);
         }
 
-        System.out.println("Other allowed peoples :");
-        for(String nonOp : coInfos){
-            if(!ops.contains(nonOp)) System.out.println("- "+nonOp.split(":")[0]);
+        broadcastMsgToOps("Other allowed peoples :");
+        for(String nonOp : nonOps){
+            broadcastMsgToOps("- "+nonOp);
         }
     }
+
 }
