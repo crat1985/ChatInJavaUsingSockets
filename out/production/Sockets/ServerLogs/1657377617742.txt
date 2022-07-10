@@ -1,8 +1,0 @@
-[LOG] Server started
-[LOG] Admin joined the chat !
-[LOG] ric21000 joined the chat !
-[LOG] ric21000: /stop
-[LOG] ric21000 is now op !
-[LOG] ric21000 is now op !
-[LOG] ric21000 leaves the chat !
-[LOG] Server stopped

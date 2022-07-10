@@ -1,5 +1,0 @@
-[LOG] Server started
-[LOG] null leaves the chat !
-[LOG] Admin joined the chat !
-[LOG] Admin leaves the chat !
-[LOG] Server stopped
