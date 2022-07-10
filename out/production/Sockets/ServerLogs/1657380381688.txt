@@ -1,0 +1,88 @@
+[LOG] Server started
+[LOG] null leaves the chat !
+[LOG] Admin joined the chat !
+[LOG] null leaves the chat !
+[LOG] null leaves the chat !
+[LOG] GioLeGamer_yt joined the chat !
+[LOG] Admin: XD
+[LOG] GioLeGamer_yt: Abcdefghijklmnopqrstuvwxyz
+[LOG] Admin: XD
+[LOG] GioLeGamer_yt: yes
+[LOG] GioLeGamer_yt: That's strange !
+[LOG] GioLeGamer_yt: But I love English !
+[LOG] Admin: /op /op GioLeGamer_yt
+[LOG] Admin: /op GioLeGamer_yt
+[LOG] Admin: /ban GioLeGamer_yt
+[LOG] GioLeGamer_yt: aaa
+[LOG] Admin: /stop
+[LOG] GioLeGamer_yt: a
+[LOG] GioLeGamer_yt: 
+[LOG] GioLeGamer_yt: 
+[LOG] GioLeGamer_yt: a
+[LOG] GioLeGamer_yt: a
+[LOG] GioLeGamer_yt: a
+[LOG] GioLeGamer_yt: a
+[LOG] GioLeGamer_yt: a
+[LOG] GioLeGamer_yt: a
+[LOG] GioLeGamer_yt: a
+[LOG] GioLeGamer_yt: a
+[LOG] GioLeGamer_yt: a
+[LOG] GioLeGamer_yt: 
+[LOG] GioLeGamer_yt: a
+[LOG] Admin: kuegzf
+[LOG] Admin: /reload
+[LOG] GioLeGamer_yt: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+[LOG] GioLeGamer_yt: 
+[LOG] GioLeGamer_yt: l
+[LOG] GioLeGamer_yt: l
+[LOG] GioLeGamer_yt: l
+[LOG] GioLeGamer_yt: l
+[LOG] GioLeGamer_yt: l
+[LOG] GioLeGamer_yt: l
+[LOG] GioLeGamer_yt: ll
+[LOG] GioLeGamer_yt: l
+[LOG] GioLeGamer_yt: l
+[LOG] GioLeGamer_yt: l
+[LOG] GioLeGamer_yt: l
+[LOG] GioLeGamer_yt: l
+[LOG] GioLeGamer_yt: l
+[LOG] GioLeGamer_yt: l
+[LOG] GioLeGamer_yt: l
+[LOG] GioLeGamer_yt: ll
+[LOG] GioLeGamer_yt: Soy el meyo !
+[LOG] GioLeGamer_yt: C'est de l 'espagnol XD
+[LOG] GioLeGamer_yt: Muy Caliente !
+[LOG] Admin: ...
+[LOG] GioLeGamer_yt: Encore de l'espa
+[LOG] Admin: .
+[LOG] Admin: ..
+[LOG] Admin: ...
+[LOG] Admin: ok...
+[LOG] GioLeGamer_yt: Yamete Kudasei
+[LOG] GioLeGamer_yt: !
+[LOG] Admin: Juste mes commandes ne fonctionnent pas
+[LOG] Admin: c'est chiantr
+[LOG] Admin: /reload
+[LOG] Admin leaves the chat !
+[LOG] GioLeGamer_yt: J'ai cru que c'etait a cause des phrases en espagnoml
+[LOG] GioLeGamer_yt: espagnol*
+[LOG] GioLeGamer_yt leaves the chat !
+[LOG] GioLeGamer_yt joined the chat !
+[LOG] GioLeGamer_yt: Buongiorno !
+[LOG] GioLeGamer_yt: Come stai ?
+[LOG] Admin joined the chat !
+[LOG] Admin: /op GioLeGamer_yt
+[LOG] Admin: $/op GioLeGamer_yt
+[LOG] Admin: /op GioLeGamer_yt
+[LOG] GioLeGamer_yt: /op GioLeGamer_yt;abcd!
+[LOG] Admin leaves the chat !
+[LOG] Admin joined the chat !
+[LOG] GioLeGamer_yt joined the chat !
+[LOG] GioLeGamer_yt is now op !
+[LOG] GioLeGamer_yt is now op !
+[LOG] GioLeGamer_yt leaves the chat !
+[LOG] GioLeGamer_yt: Buongiorno !
+[LOG] GioLeGamer_yt: Come stai ?
+[LOG] GioLeGamer_yt: /reload
+[LOG] Admin leaves the chat !
+[LOG] Server stopped

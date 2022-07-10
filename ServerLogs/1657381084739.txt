@@ -1,0 +1,19 @@
+[LOG] Server started
+[LOG] null leaves the chat !
+[LOG] null leaves the chat !
+[LOG] GioLeGamer_yt joined the chat !
+[LOG] ric21000 joined the chat !
+[LOG] ric21000: slt
+[LOG] ric21000: How do you feel ?
+[LOG] GioLeGamer_yt: Buenos dias !
+[LOG] ric21000:  ?
+[LOG] GioLeGamer_yt: Bien !
+[LOG] ric21000: Are you okay ?
+[LOG] GioLeGamer_yt: /reload
+[LOG] ric21000: /reload
+[LOG] GioLeGamer_yt: Soy el meyo !
+[LOG] ric21000: /stop
+[LOG] ric21000 leaves the chat !
+[LOG] Admin joined the chat !
+[LOG] Admin leaves the chat !
+[LOG] Server stopped

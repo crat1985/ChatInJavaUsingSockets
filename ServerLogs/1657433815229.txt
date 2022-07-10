@@ -1,0 +1,16 @@
+[ADMIN BROADCAST] Config reloaded !
+[ADMIN BROADCAST] Ops are :
+[ADMIN BROADCAST] - ric21000
+[ADMIN BROADCAST] - Admin
+[ADMIN BROADCAST] - GioLeGamer_yt
+[ADMIN BROADCAST] Banned are :
+[ADMIN BROADCAST] - jspmaistkt
+[ADMIN BROADCAST] Other allowed peoples :
+[ADMIN BROADCAST] - slt
+[ADMIN BROADCAST] - jsp
+[LOG] Server started
+[LOG] ric21000 joined the chat !
+[LOG] ric21000: /unban jspmaistkt
+[LOG] ric21000 leaves the chat !
+[LOG] ric21000 joined the chat !
+[LOG] ric21000 leaves the chat !

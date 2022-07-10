@@ -1,0 +1,5 @@
+[LOG] Server started
+[LOG] null leaves the chat !
+[LOG] GioLeGamer_yt joined the chat !
+[LOG] GioLeGamer_yt leaves the chat !
+[LOG] Server stopped

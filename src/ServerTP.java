@@ -187,9 +187,7 @@ public class ServerTP extends Thread{
         private boolean isCommand(String msg) throws IOException {
             if(isAdmin) {
                 if(msg.startsWith("/stop")){
-                    for(ClientHandler clientHandler : clientsOnline){
-                        clientHandler.closeEverything();
-                    }
+                    closeEverything();
                     fileWriter.write("[LOG] Server stopped\n");
                     fileWriter.flush();
                     fileWriter.close();
@@ -249,8 +247,6 @@ public class ServerTP extends Thread{
                 if(msg.startsWith("/unban ")){
                     String pseudo = msg.split(":")[1];
                     if(bannedPseudos.contains(pseudo)){
-                        /*broadcastMsg(bannedPseudos+" n'est pas banni(e) !");
-                        return true;*/
                         bannedPseudos.remove(pseudo);
                     }
                     BufferedReader bannedFileReader = new BufferedReader(new FileReader(bannedFile));
@@ -306,6 +302,49 @@ public class ServerTP extends Thread{
                     printWriter.flush();
                     printWriter.close();
                     return true;
+                }
+
+                if(msg.startsWith("/deop ")){
+                    String user = msg.split(" ")[1];
+                    BufferedReader opsBufferedReader = new BufferedReader(new FileReader(opsFile));
+                    ArrayList<String> opsFileContent = new ArrayList<>();
+                    String tempContent;
+                    while((tempContent=opsBufferedReader.readLine())!=null){
+                        opsFileContent.add(tempContent);
+                    }
+                    opsBufferedReader.close();
+
+                    ops.clear();
+                    for(String op : opsFileContent){
+                        ops.add(op.split(":")[0]);
+                    }
+
+                    PrintWriter opsPW = new PrintWriter(new FileWriter(opsFile),true);
+                    for(String op : opsFileContent){
+                        opsPW.println(op);
+                    }
+                    opsPW.close();
+
+
+                    BufferedReader nonOpsBufferedReader = new BufferedReader(new FileReader(nonOpFile));
+                    ArrayList<String> nonOpsFileContent = new ArrayList<>();
+                    while((tempContent=opsBufferedReader.readLine())!=null){
+                        nonOpsFileContent.add(tempContent);
+                    }
+                    nonOpsBufferedReader.close();
+
+                    nonOps.clear();
+                    for(String nonOp : nonOpsFileContent){
+                        nonOps.add(nonOp.split(":")[0]);
+                    }
+
+                    PrintWriter nonOpsPW = new PrintWriter(new FileWriter(nonOpFile),true);
+                    for(String nonOp : nonOpsFileContent){
+                        nonOpsPW.println(nonOp);
+                    }
+                    nonOpsPW.close();
+
+
                 }
 
                 if(msg.startsWith("/removeuser ")){
