@@ -20,10 +20,10 @@ public class ServerTP extends Thread{
     private ArrayList<String> nonOpFileContent = new ArrayList<>();
     private ArrayList<String> bannedFileContent = new ArrayList<>();
     private static PrintWriter printWriter;
-    ServerSocket serverSocket;
-    File opsFile = new File("ops.txt");
-    File nonOpFile = new File("non-ops.txt");
-    File bannedFile = new File("banned.txt");
+    private ServerSocket serverSocket;
+    private final File opsFile = new File("src/ops.txt");
+    private final File nonOpFile = new File("src/non-ops.txt");
+    private final File bannedFile = new File("src/banned.txt");
     @Override
     public void run() {
         try{
@@ -55,6 +55,9 @@ public class ServerTP extends Thread{
     }
 
     public ServerTP() throws IOException {
+        if(!new File("src").exists()){
+            new File("src").mkdir();
+        }
         if(!opsFile.exists()){
             opsFile.createNewFile();
             PrintWriter printWriter = new PrintWriter(new FileWriter(opsFile),true);
@@ -143,6 +146,12 @@ public class ServerTP extends Thread{
                     askedPseudo = in.readLine();
                     out.println("Password :");
                     askedPassword = in.readLine();
+                    if(askedPseudo==null){
+                        return;
+                    }
+                    if(askedPassword==null){
+                        return;
+                    }
                     if(askedPseudo.contains(":")||askedPassword.contains(":")){
                         continue;
                     }
@@ -196,30 +205,7 @@ public class ServerTP extends Thread{
                     return true;
                 }
                 if(msg.startsWith("/op ")){
-                    if(onlinePseudos.contains(msg.split(" ")[1])){
-                        for(ClientHandler client : clientsOnline){
-                            if(client.username.equalsIgnoreCase(msg.split(" ")[1])){
-                                client.isAdmin = true;
-                                opedClients.add(client);
-                                PrintWriter printWriter = new PrintWriter(new FileWriter(opsFile));
-                                for (ClientHandler opedClient : opedClients){
-                                    printWriter.println(opedClient.username+":"+client.password);
-                                }
-                                printWriter.println(client.username+":"+client.password);
-                                printWriter.close();
-                                broadcastMsg(client.username+" is now op !");
-                                printWriter.println("[LOG] "+client.username+" is now op !");
-                                return true;
-                            }
-                        }
-                        //System.out.println("[LOG] Cannot op "+msg.split(" ")[1]+" !");
-                        broadcastMsg("Cannot op "+msg.split(" ")[1]+" !");
-                        printWriter.println("[LOG] Cannot op "+msg.split(" ")[1]+" !");
-                        return true;
-                    }
-                    //System.out.println("[LOG] "+msg.split(" ")[1]+" not connected !");
-                    broadcastMsg(msg.split(" ")[1]+" not connected !");
-                    printWriter.println("[LOG] Cannot op "+msg.split(" ")[1]+" !");
+                    opUser(msg);
                     return true;
                 }
                 if(msg.startsWith("/ban ")){
@@ -232,103 +218,52 @@ public class ServerTP extends Thread{
                     return true;
                 }
 
-                if(msg.startsWith("/add ")){
+                if(msg.startsWith("/adduser ")){
+                    String infos = msg.split(" ")[1];
+                    String pseudo = infos.split(":")[0];
+                    String password = infos.split(":")[1];
                     if(!msg.contains(":")){
                         out.println("Erreur de syntaxe");
                         return true;
                     }
-                    BufferedReader reader = new BufferedReader(new FileReader(nonOpFile));
-                    ArrayList<String> nonOpPseudos = new ArrayList<>();
-                    ArrayList<String> nonOpClients = new ArrayList<>();
-                    String content;
-                    while((content=reader.readLine())!=null){
-                        nonOpPseudos.add(content.split(":")[0]);
-                        nonOpClients.add(content);
-                    }
-                    reader.close();
-                    if(nonOpPseudos.contains(msg.split(" ")[1].split(":")[0])){
-                        out.println("Ce joueur a déjà été ajouté !");
+                    reload();
+                    if(nonOpFileContent.contains(infos)){
+                        out.write("User already exists as non-op user !");
                         return true;
                     }
-                    PrintWriter printWriter = new PrintWriter(new FileWriter(nonOpFile));
-                    for(String nonOpClient : nonOpClients){
-                        printWriter.println(nonOpClient);
+                    for(String nonOpUser : nonOpFileContent){
+                        if(nonOpUser.startsWith(pseudo+":")){
+                            out.write("User already exists as non-op user but with a different password !");
+                            return true;
+                        }
                     }
-                    printWriter.println(msg.split(" ")[1]);
-                    printWriter.flush();
+                    if(opFileContent.contains(infos)){
+                        out.write("User already exists as op user !");
+                        return true;
+                    }
+                    for(String opUser : opFileContent){
+                        if(opUser.startsWith(pseudo+":")){
+                            out.write("User already exists as op user but with a different password !");
+                            return true;
+                        }
+                    }
+                    nonOpFileContent.add(infos);
+                    PrintWriter printWriter = new PrintWriter(new FileWriter(nonOpFile),true);
+                    for(String nonOpUser : nonOpFileContent){
+                        printWriter.println(nonOpUser);
+                    }
                     printWriter.close();
+                    reload();
                     return true;
                 }
 
                 if(msg.startsWith("/deop ")){
-                    String user = msg.split(" ")[1];
-                    BufferedReader opsBufferedReader = new BufferedReader(new FileReader(opsFile));
-                    ArrayList<String> opsFileContent = new ArrayList<>();
-                    String tempContent;
-                    while((tempContent=opsBufferedReader.readLine())!=null){
-                        opsFileContent.add(tempContent);
-                    }
-                    opsBufferedReader.close();
-
-                    opsPseudos.clear();
-                    for(String op : opsFileContent){
-                        opsPseudos.add(op.split(":")[0]);
-                    }
-
-                    PrintWriter opsPW = new PrintWriter(new FileWriter(opsFile),true);
-                    for(String op : opsFileContent){
-                        opsPW.println(op);
-                    }
-                    opsPW.close();
-
-
-                    BufferedReader nonOpsBufferedReader = new BufferedReader(new FileReader(nonOpFile));
-                    ArrayList<String> nonOpsFileContent = new ArrayList<>();
-                    while((tempContent=opsBufferedReader.readLine())!=null){
-                        nonOpsFileContent.add(tempContent);
-                    }
-                    nonOpsBufferedReader.close();
-
-                    nonOpsPseudos.clear();
-                    for(String nonOp : nonOpsFileContent){
-                        nonOpsPseudos.add(nonOp.split(":")[0]);
-                    }
-
-                    PrintWriter nonOpsPW = new PrintWriter(new FileWriter(nonOpFile),true);
-                    for(String nonOp : nonOpsFileContent){
-                        nonOpsPW.println(nonOp);
-                    }
-                    nonOpsPW.close();
-
-
+                    deopUser(msg);
+                    return true;
                 }
 
                 if(msg.startsWith("/removeuser ")){
-                    String user = msg.split(" ")[1];
-                    if(user.contains(":")){
-                        out.println("Le pseudo ne peut pas contenir de ':' !");
-                        return true;
-                    }
-                    BufferedReader br = new BufferedReader(new FileReader(nonOpFile));
-                    String content;
-                    ArrayList<String> fileContent = new ArrayList<>();
-                    while((content = br.readLine())!=null){
-                        fileContent.add(content);
-                    }
-                    br.close();
-                    for(String anUser : fileContent){
-                        if(anUser.split(":")[0].equals(user)){
-                            fileContent.remove(anUser);
-                            PrintWriter pw = new PrintWriter(new FileWriter(nonOpFile));
-                            for(String a : fileContent){
-                                pw.println(a);
-                            }
-                            pw.flush();
-                            pw.close();
-                            out.println("User "+user+" deleted !");
-                            return true;
-                        }
-                    }
+                    removeUser(msg);
                     return true;
                 }
             }
@@ -340,6 +275,128 @@ public class ServerTP extends Thread{
                 return true;
             }
             return false;
+        }
+
+        private void removeUser(String msg) throws IOException {
+            String pseudo = msg.split(" ")[1];
+            if(pseudo.equals("Admin")){
+                out.println("Cannot remove user Admin !");
+                return;
+            }
+            if(pseudo.contains(":")){
+                out.println("Username cannot contains ':' !");
+                return;
+            }
+            reload();
+
+            for(String info : opFileContent){
+                if(info.startsWith(pseudo+":")){
+                    deopUser("/deop "+pseudo);
+                    break;
+                }
+            }
+            String nonOpUser = null;
+            for(String nonOpInfo : nonOpFileContent){
+                if(nonOpInfo.startsWith(pseudo+":")){
+                    nonOpUser = nonOpInfo;
+                    break;
+                }
+            }
+            if(nonOpUser!=null){
+                nonOpFileContent.remove(nonOpUser);
+                PrintWriter nonOpFileWriter = new PrintWriter(new FileWriter(nonOpFile) ,true);
+                for(String user : nonOpFileContent){
+                    nonOpFileWriter.println(user);
+                }
+                nonOpFileWriter.close();
+                reload();
+            }
+        }
+
+        private void opUser(String msg) throws IOException {
+            String pseudo = msg.split(" ")[1];
+            if(pseudo.contains(":")) {
+                out.println("Un pseudo ne peut pas contenir ':' !");
+                return;
+            }
+            if(pseudo.length()<1){
+                out.println("Un pseudo ne peut pas faire moins de 1 caractère XD");
+                return;
+            }
+            reload();
+            boolean mustBeOpped = false;
+            for(String opUser : opFileContent){
+                if(opUser.startsWith(pseudo+":")){
+                    out.println(pseudo+" is already op !");
+                    return;
+                }
+            }
+            String tempInfos = null;
+            for(String nonOpUser : nonOpFileContent){
+                if(nonOpUser.startsWith(pseudo+":")){
+                    mustBeOpped = true;
+                    tempInfos = nonOpUser;
+                }
+            }
+            for(String bannedUser : bannedFileContent){
+                if(bannedUser.startsWith(pseudo+":")){
+                    mustBeOpped = false;
+                    out.println(pseudo+" is banned so he/she can't be opped !");
+                    return;
+                }
+            }
+            if(!mustBeOpped){
+                out.println("User "+pseudo+" not found !");
+                return;
+            }
+            nonOpFileContent.remove(tempInfos);
+            PrintWriter nonOpWriter = new PrintWriter(new FileWriter(nonOpFile),true);
+            for(String nonOpUser : nonOpFileContent){
+                nonOpWriter.println(nonOpUser);
+            }
+            nonOpWriter.close();
+            PrintWriter opWriter = new PrintWriter(new FileWriter(opsFile), true);
+            for(String opUser : opFileContent){
+                opWriter.println(opUser);
+            }
+            opWriter.close();
+            reload();
+        }
+
+        private void deopUser(String msg) throws IOException {
+            String pseudo = msg.split(" ")[1];
+            reload();
+
+            String infos = "";
+            boolean isOp = false;
+
+            for(String nonOpUser : nonOpFileContent){
+                if(nonOpUser.startsWith(pseudo+":")){
+                    if(!opFileContent.contains(nonOpUser)){
+                        out.println(pseudo+" is not oped !");
+                        return;
+                    }
+                    infos = nonOpUser;
+                    isOp=true;
+                }
+            }
+            for(String opUser : opFileContent){
+                if(opUser.startsWith(pseudo+":")){
+                    infos = opUser;
+                    isOp=true;
+                }
+            }
+            if(isOp){
+                nonOpFileContent.remove(infos);
+                PrintWriter nonOpFileWriter = new PrintWriter(new FileWriter(nonOpFile) ,true);
+                for(String nonOpUser : nonOpFileContent){
+                    nonOpFileWriter.println(nonOpUser);
+                }
+                nonOpFileWriter.close();
+                reload();
+                return;
+            }
+            out.println(pseudo+" not found !");
         }
 
         private void banUser(String msg) throws IOException {
@@ -469,7 +526,7 @@ public class ServerTP extends Thread{
         bufferedReader2.close();
 
         PrintWriter printWriter = new PrintWriter(new FileWriter(nonOpFile),true);
-        for(String nonOp : nonOpsPseudos){
+        for(String nonOp : nonOpFileContent){
             printWriter.println(nonOp);
         }
         printWriter.close();
@@ -482,7 +539,6 @@ public class ServerTP extends Thread{
             String tempPseudo = bannedReader.split(":")[0];
             bannedPseudos.add(tempPseudo);
             bannedFileContent.add(bannedReader);
-            if(opsPseudos.contains(tempPseudo)) opsPseudos.remove(tempPseudo);
         }
         bannedFileReader.close();
 
